@@ -1,5 +1,5 @@
 {
-    "name": "shopblocks/omnipay-barclays-epdq",
+    "name": "uskur/omnipay-barclays-epdq",
     "type": "library",
     "description": "Barclays ePDQ driver for the Omnipay payment processing library.",
     "keywords": [
