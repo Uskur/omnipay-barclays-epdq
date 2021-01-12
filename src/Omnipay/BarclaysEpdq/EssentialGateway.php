@@ -47,7 +47,7 @@ class EssentialGateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\BarclaysEpdq\Message\EssentialCompletePurchaseRequest
      */
-    public function completePurchase(array $parameters = array())
+    public function acceptNotification(array $parameters = array())
     {
         return $this->createRequest(
             '\Omnipay\BarclaysEpdq\Message\EssentialCompletePurchaseRequest',
@@ -59,6 +59,22 @@ class EssentialGateway extends AbstractGateway
     {
         return $this->createRequest(
             '\Omnipay\BarclaysEpdq\Message\EssentialRefundRequest',
+            array_merge($this->parameters->all(), $parameters)
+        );
+    }
+
+    public function status(array $parameters = array())
+    {
+        return $this->createRequest(
+            '\Omnipay\BarclaysEpdq\Message\DirectQueryRequest',
+            array_merge($this->parameters->all(), $parameters)
+        );
+    }
+
+    public function extendedStatus(array $parameters = array())
+    {
+        return $this->createRequest(
+            '\Omnipay\BarclaysEpdq\Message\DirectQueryRequest',
             array_merge($this->parameters->all(), $parameters)
         );
     }
@@ -129,7 +145,19 @@ class EssentialGateway extends AbstractGateway
 
     public function getLanguage()
     {
-        return $this->getParameter('language');
+        if (empty($this->getParameter('language'))) {
+            return 'en_US';
+        }
+        $language = $this->getParameter('language');
+        $allowedLanguages = [
+            'ar_AR', 'cs_CZ', 'dk_DK', 'de_DE', 'el_GR', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'he_IL', 'hu_HU',
+            'it_IT', 'ja_JP', 'ko_KR', 'nl_BE', 'nl_NL', 'no_NO', 'pl_PL', 'pt_PT', 'ru_RU', 'se_SE', 'sk_SK',
+            'tr_TR', 'zh_CN'
+        ];
+        if (!in_array($language, $allowedLanguages)) {
+            throw new InvalidRequestException('Language must be one of the allowed languages.');
+        }
+        return $language;
     }
 
     public function setLanguage($value)

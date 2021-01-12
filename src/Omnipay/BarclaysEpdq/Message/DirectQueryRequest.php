@@ -5,10 +5,10 @@ namespace Omnipay\BarclaysEpdq\Message;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Message\AbstractRequest;
 
-class EssentialRefundRequest extends AbstractRequest
+class DirectQueryRequest extends AbstractRequest
 {
-    protected $liveEndpoint = 'https://payments.epdq.co.uk/ncol/prod/maintenancedirect.asp';
-    protected $testEndpoint = 'https://mdepayments.epdq.co.uk/ncol/test/maintenancedirect.asp';
+    protected $liveEndpoint = 'https://payments.epdq.co.uk/ncol/prod/querydirect.asp';
+    protected $testEndpoint = 'https://mdepayments.epdq.co.uk/ncol/test/querydirect.asp';
 
     public function getClientId()
     {
@@ -43,10 +43,6 @@ class EssentialRefundRequest extends AbstractRequest
         }
 
         $data['PSPID'] = $this->getClientId();
-
-        $data['AMOUNT'] = $this->getAmountInteger();
-
-        $data['OPERATION'] = "RFD";
         $data['PSWD'] = $this->getPassword();
         $data['USERID'] = $this->getUserid();
 
@@ -69,7 +65,7 @@ class EssentialRefundRequest extends AbstractRequest
             $data = [];
         }
 
-        return $this->response = new EssentialRefundResponse($this, $data);
+        return $this->response = new DirectQueryResponse($this, $data);
     }
 
     public function getEndpoint()
@@ -94,16 +90,6 @@ class EssentialRefundRequest extends AbstractRequest
         return $this->getParameter('shaIn');
     }
 
-    public function getOperation()
-    {
-        return $this->getParameter('OPERATION');
-    }
-
-    public function setOperation($value)
-    {
-        return $this->setParameter('OPERATION', $value);
-    }
-
     public function getPassword()
     {
         return $this->getParameter('PSWD');
@@ -122,16 +108,6 @@ class EssentialRefundRequest extends AbstractRequest
     public function setUserid($value)
     {
         return $this->setParameter('USERID', $value);
-    }
-
-    public function getPaymentid()
-    {
-        return $this->getParameter('ORDERID');
-    }
-
-    public function setPaymentid($value)
-    {
-        return $this->setParameter('ORDERID', $value);
     }
 
     protected function sendRequest($data)

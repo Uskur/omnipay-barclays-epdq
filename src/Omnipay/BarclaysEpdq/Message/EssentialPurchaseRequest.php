@@ -8,6 +8,7 @@ use Omnipay\BarclaysEpdq\Delivery;
 use Omnipay\BarclaysEpdq\Feedback;
 use Omnipay\Common\ItemBag;
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Exception\InvalidRequestException;
 
 /**
  * BarclaysEpdq Essential Purchase Request
@@ -37,11 +38,27 @@ class EssentialPurchaseRequest extends AbstractRequest
 
     public function getLanguage()
     {
-        return $this->getParameter('language');
+        if (empty($this->getParameter('language'))) {
+            return 'en_US';
+        }
+        $language = $this->getParameter('language');
+        $allowedLanguages = [
+            'ar_AR', 'cs_CZ', 'dk_DK', 'de_DE', 'el_GR', 'en_US', 'es_ES', 'fi_FI', 'fr_FR', 'he_IL', 'hu_HU',
+            'it_IT', 'ja_JP', 'ko_KR', 'nl_BE', 'nl_NL', 'no_NO', 'pl_PL', 'pt_PT', 'ru_RU', 'se_SE', 'sk_SK',
+            'tr_TR', 'zh_CN'
+        ];
+        if (!in_array($language, $allowedLanguages)) {
+            throw new InvalidRequestException('Language must be one of the allowed languages.');
+        }
+        return $language;
     }
 
     public function setLanguage($value)
     {
+        //@todo there must be a better way to handle this?
+        if(strtolower($value) == 'en') {
+            $value = 'en_US';
+        }
         return $this->setParameter('language', $value);
     }
 
@@ -170,33 +187,33 @@ class EssentialPurchaseRequest extends AbstractRequest
 
         $data = array();
 
-        $data['PSPID']          = $this->getClientId();
+        $data['PSPID'] = $this->getClientId();
 
-        $data['ORDERID']        = $this->getTransactionId();
+        $data['ORDERID'] = $this->getTransactionId();
         // Useful optional parameter which can be used as a variable in the post-payment feedback URL
         // eg. The URL can be set in the ePDQ control panel as something like:
         //     "https://www.example.com/callback/<PARAMVAR>"
-        $data['PARAMVAR']       = $this->getTransactionId();
-        $data['CURRENCY']       = $this->getCurrency();
-        $data['LANGUAGE']       = $this->getLanguage();
-        $data['AMOUNT']         = $this->getAmountInteger();
+        $data['PARAMVAR'] = $this->getTransactionId();
+        $data['CURRENCY'] = $this->getCurrency();
+        $data['LANGUAGE'] = $this->getLanguage();
+        $data['AMOUNT'] = $this->getAmountInteger();
 
-        $data['ACCEPTURL']      = $this->getReturnUrl();
-        $data['CANCELURL']      = $this->getCancelUrl();
-        $data['DECLINEURL']     = $this->getDeclineUrl();
-        $data['EXCEPTIONURL']   = $this->getExceptionUrl();
+        $data['ACCEPTURL'] = $this->getReturnUrl();
+        $data['CANCELURL'] = $this->getCancelUrl();
+        $data['DECLINEURL'] = $this->getDeclineUrl();
+        $data['EXCEPTIONURL'] = $this->getExceptionUrl();
 
         $card = $this->getCard();
         if ($card) {
-            $data['CN']              = $card->getName();
-            $data['COM']             = $card->getCompany();
-            $data['EMAIL']           = $card->getEmail();
-            $data['OWNERZIP']        = $card->getPostcode();
-            $data['OWNERTOWN']       = $card->getCity();
-            $data['OWNERCTY']        = $card->getCountry();
-            $data['OWNERTELNO']      = $card->getPhone();
-            $data['OWNERADDRESS']    = $card->getAddress1();
-            $data['OWNERADDRESS2']   = $card->getAddress2();
+            $data['CN'] = $card->getName();
+            $data['COM'] = $card->getCompany();
+            $data['EMAIL'] = $card->getEmail();
+            $data['OWNERZIP'] = $card->getPostcode();
+            $data['OWNERTOWN'] = $card->getCity();
+            $data['OWNERCTY'] = $card->getCountry();
+            $data['OWNERTELNO'] = $card->getPhone();
+            $data['OWNERADDRESS'] = $card->getAddress1();
+            $data['OWNERADDRESS2'] = $card->getAddress2();
         }
 
         /** @var \Omnipay\BarclaysEpdq\Item[] $items */
@@ -208,23 +225,23 @@ class EssentialPurchaseRequest extends AbstractRequest
                 if ($item->getPrice() <> 0) {
                     // item index always start from 1 not from 0
                     ++$index;
-                    $data["ITEMNAME$index"]            = $item->getName();
+                    $data["ITEMNAME$index"] = $item->getName();
                     // Empty descriptions are not allowed.
-                    $data["ITEMDESC$index"]            = $item->getDescription() ?: ' ';
-                    $data["ITEMQUANT$index"]           = $item->getQuantity();
-                    $data["ITEMPRICE$index"]           = $this->formatCurrency($item->getPrice());
+                    $data["ITEMDESC$index"] = $item->getDescription() ?: ' ';
+                    $data["ITEMQUANT$index"] = $item->getQuantity();
+                    $data["ITEMPRICE$index"] = $this->formatCurrency($item->getPrice());
                     if (is_a($item, 'Omnipay\BarclaysEpdq\Item')) {
-                        $data["ITEMID$index"]              = $item->getId();
-                        $data["ITEMCOMMENTS$index"]        = $item->getComments();
-                        $data["ITEMCATEGORY$index"]        = $item->getCategory();
-                        $data["ITEMATTRIBUTES$index"]      = $item->getAttributes();
-                        $data["ITEMDISCOUNT$index"]        = $this->formatCurrency($item->getDiscount());
-                        $data["ITEMUNITOFMEASURE$index"]   = $item->getUnitOfMeasure();
-                        $data["ITEMWEIGHT$index"]          = $item->getWeight();
-                        $data["ITEMVAT$index"]             = $this->formatCurrency($item->getVat());
-                        $data["ITEMVATCODE$index"]         = $item->getVatCode();
+                        $data["ITEMID$index"] = $item->getId();
+                        $data["ITEMCOMMENTS$index"] = $item->getComments();
+                        $data["ITEMCATEGORY$index"] = $item->getCategory();
+                        $data["ITEMATTRIBUTES$index"] = $item->getAttributes();
+                        $data["ITEMDISCOUNT$index"] = $this->formatCurrency($item->getDiscount());
+                        $data["ITEMUNITOFMEASURE$index"] = $item->getUnitOfMeasure();
+                        $data["ITEMWEIGHT$index"] = $item->getWeight();
+                        $data["ITEMVAT$index"] = $this->formatCurrency($item->getVat());
+                        $data["ITEMVATCODE$index"] = $item->getVatCode();
                         $data["ITEMFDMPRODUCTCATEG$index"] = $item->getFraudModuleCategory();
-                        $data["ITEMQUANTORIG$index"]       = $item->getMaximumQuantity();
+                        $data["ITEMQUANTORIG$index"] = $item->getMaximumQuantity();
                     }
                 }
             }
@@ -232,7 +249,7 @@ class EssentialPurchaseRequest extends AbstractRequest
 
         $feedback = $this->getFeedback();
         if ($feedback) {
-            $data['COMPLUS']   = $feedback->getComPlus();
+            $data['COMPLUS'] = $feedback->getComPlus();
             $data['PARAMPLUS'] = $feedback->getParamPlus();
         }
 
