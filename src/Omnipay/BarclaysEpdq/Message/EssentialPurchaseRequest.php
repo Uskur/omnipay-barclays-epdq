@@ -2,7 +2,7 @@
 
 namespace Omnipay\BarclaysEpdq\Message;
 
-use Omnipay\BarclaysEpdq\Item;
+use Omnipay\BarclaysEpdq\Extend\Item;
 use Omnipay\BarclaysEpdq\PageLayout;
 use Omnipay\BarclaysEpdq\Delivery;
 use Omnipay\BarclaysEpdq\Feedback;
@@ -355,7 +355,7 @@ class EssentialPurchaseRequest extends AbstractRequest
     {
         $newItems = new ItemBag();
         foreach ($items as $item) {
-            $newItems->add(new Item($item->getParameters()));
+            $newItems->add(new Item($item));
         }
 
         return parent::setItems($newItems);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\BarclaysEpdq;
+namespace Omnipay\BarclaysEpdq\Extend;
 
 /**
  * BarclaysEpdq Item
