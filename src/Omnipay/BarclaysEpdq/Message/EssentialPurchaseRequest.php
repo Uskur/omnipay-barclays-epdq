@@ -212,8 +212,7 @@ class EssentialPurchaseRequest extends AbstractRequest
             $data['OWNERTOWN'] = $card->getCity();
             $data['OWNERCTY'] = $card->getCountry();
             $data['OWNERTELNO'] = $card->getPhone();
-            $data['OWNERADDRESS'] = $card->getAddress1();
-            $data['OWNERADDRESS2'] = $card->getAddress2();
+            $data['OWNERADDRESS'] = substr(0, 35, $card->getAddress1() . " " . $card->getAddress2());
         }
 
         /** @var \Omnipay\BarclaysEpdq\Item[] $items */
