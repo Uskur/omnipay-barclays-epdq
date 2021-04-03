@@ -17,7 +17,7 @@ class DirectQueryRequest extends AbstractRequest
 
     public function setClientId($value)
     {
-        return $this->setParameter('clientId', substr($value, 0, 30));
+        return $this->setParameter('clientId', mb_substr($value, 0, 30));
     }
 
     public function getLanguage()

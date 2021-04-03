@@ -33,7 +33,7 @@ class EssentialPurchaseRequest extends AbstractRequest
      */
     public function setClientId($value)
     {
-        return $this->setParameter('clientId', substr($value, 0, 30));
+        return $this->setParameter('clientId', mb_substr($value, 0, 30));
     }
 
     public function getLanguage()
@@ -74,7 +74,7 @@ class EssentialPurchaseRequest extends AbstractRequest
 
     public function setDeclineUrl($value)
     {
-        return $this->setParameter('declineUrl', substr($value, 0, 200));
+        return $this->setParameter('declineUrl', mb_substr($value, 0, 200));
     }
 
     public function getExceptionUrl()
@@ -84,7 +84,7 @@ class EssentialPurchaseRequest extends AbstractRequest
 
     public function setExceptionUrl($value)
     {
-        return $this->setParameter('exceptionUrl', substr($value, 0, 200));
+        return $this->setParameter('exceptionUrl', mb_substr($value, 0, 200));
     }
 
     /**
@@ -96,7 +96,7 @@ class EssentialPurchaseRequest extends AbstractRequest
      */
     public function setReturnUrl($value)
     {
-        $value = substr($value, 0, 200);
+        $value = mb_substr($value, 0, 200);
         $this->setParameter('returnUrl', $value);
         $this->setParameter('declineUrl', $value);
         $this->setParameter('exceptionUrl', $value);
@@ -212,7 +212,7 @@ class EssentialPurchaseRequest extends AbstractRequest
             $data['OWNERTOWN'] = $card->getCity();
             $data['OWNERCTY'] = $card->getCountry();
             $data['OWNERTELNO'] = $card->getPhone();
-            $data['OWNERADDRESS'] = substr($card->getAddress1() . " " . $card->getAddress2(), 0, 35);
+            $data['OWNERADDRESS'] = mb_substr($card->getAddress1() . " " . $card->getAddress2(), 0, 35);
         }
 
         /** @var \Omnipay\BarclaysEpdq\Item[] $items */

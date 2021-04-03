@@ -24,7 +24,7 @@ class Item extends \Omnipay\Common\Item
      */
     public function setId($value)
     {
-        return $this->setParameter('id', substr($value, 0, 15));
+        return $this->setParameter('id', mb_substr($value, 0, 15));
     }
 
     /**
@@ -43,7 +43,7 @@ class Item extends \Omnipay\Common\Item
      */
     public function setCategory($value)
     {
-        return $this->setParameter('category', substr($value, 0, 50));
+        return $this->setParameter('category', mb_substr($value, 0, 50));
     }
 
     /**
@@ -81,7 +81,7 @@ class Item extends \Omnipay\Common\Item
      */
     public function setComments($value)
     {
-        return $this->setParameter('comments', substr($value, 0, 255));
+        return $this->setParameter('comments', mb_substr($value, 0, 255));
     }
 
     /**
@@ -223,7 +223,7 @@ class Item extends \Omnipay\Common\Item
      */
     public function setDescription($value)
     {
-        return parent::setDescription(substr($value, 0, 16));
+        return parent::setDescription(mb_substr($value, 0, 16));
     }
 
     /**
@@ -232,6 +232,6 @@ class Item extends \Omnipay\Common\Item
      */
     public function setName($value)
     {
-        return parent::setName(substr($value, 0, 40));
+        return parent::setName(mb_substr($value, 0, 40));
     }
 }
