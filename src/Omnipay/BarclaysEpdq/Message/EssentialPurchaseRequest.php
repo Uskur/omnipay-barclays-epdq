@@ -205,13 +205,13 @@ class EssentialPurchaseRequest extends AbstractRequest
 
         $card = $this->getCard();
         if ($card) {
-            $data['CN'] = $card->getName();
-            $data['COM'] = $card->getCompany();
-            $data['EMAIL'] = $card->getEmail();
-            $data['OWNERZIP'] = $card->getPostcode();
-            $data['OWNERTOWN'] = $card->getCity();
+            $data['CN'] = mb_substr($card->getName(), 0, 35);
+            $data['COM'] = mb_substr($card->getCompany(),0 , 100);
+            $data['EMAIL'] = mb_substr($card->getEmail(), 0, 50);
+            $data['OWNERZIP'] = mb_substr($card->getPostcode(), 0, 10);;
+            $data['OWNERTOWN'] = mb_substr($card->getCity(), 0, 40);
             $data['OWNERCTY'] = $card->getCountry();
-            $data['OWNERTELNO'] = $card->getPhone();
+            $data['OWNERTELNO'] = mb_substr($card->getPhone(), 0, 30);
             $data['OWNERADDRESS'] = mb_substr($card->getAddress1() . " " . $card->getAddress2(), 0, 35);
         }
 
